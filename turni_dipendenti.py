@@ -212,4 +212,4 @@ while riuscito == False:
 nuovo.stampa_calendario()
 nuovo.stampa_numero_turni()
 nuovo.salva_calendario()
-print('finito')
+

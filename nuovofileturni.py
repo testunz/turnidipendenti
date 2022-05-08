@@ -17,3 +17,10 @@ class Persona:
 
     def nomecognome(self):
         return f"{self.nome} {self.cognome}"
+
+class Giorno:
+    def __init__(self):
+        self.gma = ''
+        self.nome_giorno = ''
+        self.mattina = ''
+    
