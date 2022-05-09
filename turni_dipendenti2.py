@@ -4,12 +4,12 @@ import random
 import csv
 
 class Operatore:
-    def __init__(self, nome, cognome, ruolo, notte, aggiornamento, skill):
+    def __init__(self, nome, cognome, ruolo, notte, skill):
         self.nome = nome
         self.cognome = cognome
         self.ruolo = ruolo
         self.notte = notte
-        self.aggiornamento = aggiornamento #se fa turni di aggiornamento (il convenzionato non fa turni aggiornamento)
+        self.aggiornamento = False #se fa turni di aggiornamento (il convenzionato non fa turni aggiornamento)
         self.skill = skill
         self.turni_effettuati = 0 #numero totale turni effettuati dal singolo operatore
         self.ore_totali = float(0) #numero totale ore effettuate dal singolo
@@ -23,6 +23,7 @@ class Operatore:
 class Giorno:
     def __init__(self):
        self.gma = ''
+       self.nome_giorno = ''
        self.mattina = []
        self.pomeriggio = []
        self.notte = []
@@ -73,13 +74,56 @@ class Calendario:
         else:
             self.turni_conv = 25
         self.turni_dir = self.num_giorni_mese - num_festivi
-        print(self.turni_dir) #output da cancellare
-
-        
+        #print(self.turni_dir) #output da cancellare
         #    totale_giorni = calendar.monthrange(int(anno), int(mese))[1]
- 
+        
+    def lista_operatori(self):
+        listaop = []
+        with open('operatori.csv', 'r') as file:
+            reader = csv.reader (file)
+            for riga in reader:
+                listaop.append(riga)
+        listaop.pop(0)
+        for op in listaop:
+            self.operatori.append(Operatore(op[0], op[1], op[2], op[3], op[4]))
+        for op in self.operatori:
+            print(op.nomecognome(), op.notte, op.ruolo, op.skill)
+    
+    def popola_cal(self):
+        numgg = 1
+        while numgg <= self.num_giorni_mese:
+            g = Giorno()
+            g.gma = str(numgg) + '/' + str(self.mese) + '/' + str(self.anno)
+            ng = calendar.day_name[calendar.weekday(int(self.anno), int(self.mese), numgg)]
+            
+            if ng == 'Sunday':
+                g.nome_giorno = 'D'
+            elif ng == 'Monday':
+                g.nome_giorno = 'L'
+            elif ng == 'Tuesday':
+                g.nome_giorno = 'M'
+            elif ng == 'Wednesday':
+                g.nome_giorno = 'M'
+            elif ng == 'Thursday':
+                g.nome_giorno = 'G'
+            elif ng == 'Friday':
+                g.nome_giorno = 'V'
+            elif ng == 'Saturday':
+                g.nome_giorno = 'S'
+            
+            self.giorni.append(g)
+            numgg += 1
+        for a in self.giorni:
+            print(a.gma, a.nome_giorno)
+        
+
+
+
+    
 stampa = Calendario()
+stampa.lista_operatori()
 stampa.calcola_numturni_operatore()
+stampa.popola_cal()
 #print(stampa.anno)
-print(stampa.num_giorni_mese)
+#print(stampa.num_giorni_mese)
 
