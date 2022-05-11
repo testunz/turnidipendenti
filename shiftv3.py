@@ -110,17 +110,17 @@ class Calendario:
             while len(self.giorni[i].mattina) < 3:
                 conto_iterazioni += 1
                 op = random.choice(op_meno_turni)
-                if op not in self.giorni[i].mattina and op not in self.giorni[i-1].notte: # and op.turni_effettuati < op.turni_max: # and op not in self.giorni[i-2].notte:
+                if op not in self.giorni[i].mattina and op not in self.giorni[i-1].notte and op.turni_effettuati < op.turni_max: # and op not in self.giorni[i-2].notte:
                     self.giorni[i].mattina.append(op)
                     op.turni_effettuati += 1
                     op.ore_totali += self.minuti_turno_mp
                 if conto_iterazioni >1000000:
                     conto_iterazioni = 0
                     return False
-            while len(self.giorni[i].pomeriggio) < 3:
+            while len(self.giorni[i].pomeriggio) < 2:
                 conto_iterazioni += 1
                 op = random.choice(op_meno_turni)
-                if op not in self.giorni[i].mattina and op not in self.giorni[i].pomeriggio and op not in self.giorni[i-1].notte: #and op.turni_effettuati < op.turni_max:
+                if op not in self.giorni[i].mattina and op not in self.giorni[i].pomeriggio and op not in self.giorni[i-1].notte and op.turni_effettuati < op.turni_max:
                     self.giorni[i].pomeriggio.append(op)
                     op.turni_effettuati +=1
                     op.ore_totali += self.minuti_turno_mp
@@ -131,7 +131,7 @@ class Calendario:
             while len(self.giorni[i].notte) < 2:
                 conto_iterazioni += 1
                 op = random.choice(op_meno_turni)
-                if op not in self.giorni[i].mattina and op not in self.giorni[i].pomeriggio and op not in self.giorni[i].notte and op not in self.giorni[i-1].notte: # and op.turni_effettuati < (op.turni_max - 1):
+                if op not in self.giorni[i].mattina and op not in self.giorni[i].pomeriggio and op not in self.giorni[i].notte and op not in self.giorni[i-1].notte and op.turni_effettuati < (op.turni_max - 1):
                     self.giorni[i].notte.append(op)
                     op.turni_effettuati += 2
                     op.ore_totali += self.minuti_turno_n
@@ -162,7 +162,7 @@ class Calendario:
             for op in g.notte:
                 print(op.nomecognome())
         for op in self.operatori:
-            print(op.nomecognome(), op.turni_effettuati, round(op.ore_totali, 2))
+            print(op.nomecognome(), op.turni_effettuati, op.turni_max) #round(op.ore_totali, 2))
 
     def reset(self):
         for op in self.operatori:
