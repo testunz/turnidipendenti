@@ -1,13 +1,13 @@
 Nome,Cognome,Ruolo,Notte,Skill,Ferie,Preferenze Liberi,aggiornamento,h12
 Giuseppe,Bertucci,d,Si,0,1;2;3,8;9;10,4,True
 Pantaleone,Carito,d,No,0,,,4,False
-Giacomo,DeRosi,c,No,0,,,4,True
+Giacomo,DeRosi,c,No,0,,,0,True
 Paolo,Ficchi,d,Si,0,,3;4,4,True
-Teresa,Germano,c,No,0,,,4,True
+Teresa,Germano,c,No,0,,,0,True
 Sabrina,LoConte,d,Si,0,,,4,True
 Sergio,Mercurio,d,Si,0,,,4,True
-Francesca,Paone,c,Si,0,,,4,True
+Francesca,Paone,c,Si,0,,,0,True
 Pietro,Persampieri,d,Si,0,,,4,True
 Giuseppe,Pipicelli,d,Si,0,,,4,True
-Teresa,Scrivo,c,Si,0,,,4,True
+Teresa,Scrivo,c,Si,0,,,0,True
 Francesco ,Pugliano,d,Si,0,,,4,True
