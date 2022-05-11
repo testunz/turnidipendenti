@@ -11,8 +11,9 @@ class Operatore:
         self.ruolo = ruolo
         self.notte = notte
         self.skill = skill
-        self.turni_effettuati = 0       #numero totale turni effettuati dal singolo operatore
-        self.ore_totali = float(0)      #numero totale ore effettuate dal singolo
+        self.turni_effettuati = 0  #numero totale turni effettuati dal singolo operatore
+        self.turni_max = 0
+        self.ore_totali = 0      #numero totale ore effettuate dal singolo
         self.prefestivi = []            #prefestivi o festivi sotto per singolo operatore
         self.festivi = []
         self.turni = []                 #elenco striscia del mese dei turni per singolo operatore
@@ -22,7 +23,7 @@ class Operatore:
         self.h12 = h12
 
     def nomecognome(self):
-        return f"{self.nome} {self.cognome}"
+        return f"{self.cognome}" # {self.nome}
 
 class Giorno:
 
@@ -86,9 +87,15 @@ class Calendario:
         for op in listaop:
             self.operatori.append(Operatore(op[0], op[1], op[2], op[3], op[4], op[5].split(';'), op[6].split(';'), op[7], op[8]))
         for op in self.operatori:
+            if op.ruolo == 'd':
+                op.turni_max = self.turni_dir
+            elif op.ruolo == 'c':
+                op.turni_max = self.turni_conv
+
             print(op.ferie, op.preferenze, op.aggiornamento, op.h12) #for da eliminare, serve solo per controllare inserimento di ferie e preferenze giorni liberi
 
     def popola_cal(self):
+        conto_iterazioni = 0
         numgg = 1
         while numgg <= self.num_giorni_mese:
             self.giorni.append(Giorno(numgg))
@@ -98,24 +105,48 @@ class Calendario:
             self.giorni[i].gma = str(i + 1) + '/' + self.mese + '/' + self.anno
             self.giorni[i].nome_giorno = calendar.day_name[calendar.weekday(int(self.anno), int(self.mese), i + 1)]
             op_meno_turni = list(sorted(self.operatori, key=lambda x: x.turni_effettuati))
-            while ((op_meno_turni[-1].turni_effettuati - op_meno_turni[0].turni_effettuati) > 4):
+            while ((op_meno_turni[-1].turni_effettuati - op_meno_turni[0].turni_effettuati) > 3):
                 op_meno_turni.pop()
-            while len(self.giorni[i].mattina) < 3
+            while len(self.giorni[i].mattina) < 3:
+                conto_iterazioni += 1
+                op = random.choice(op_meno_turni)
+                if op not in self.giorni[i].mattina and op not in self.giorni[i-1].notte: # and op.turni_effettuati < op.turni_max: # and op not in self.giorni[i-2].notte:
+                    self.giorni[i].mattina.append(op)
+                    op.turni_effettuati += 1
+                    op.ore_totali += self.minuti_turno_mp
+                if conto_iterazioni >1000000:
+                    conto_iterazioni = 0
+                    return False
+            while len(self.giorni[i].pomeriggio) < 3:
+                conto_iterazioni += 1
+                op = random.choice(op_meno_turni)
+                if op not in self.giorni[i].mattina and op not in self.giorni[i].pomeriggio and op not in self.giorni[i-1].notte: #and op.turni_effettuati < op.turni_max:
+                    self.giorni[i].pomeriggio.append(op)
+                    op.turni_effettuati +=1
+                    op.ore_totali += self.minuti_turno_mp
+                if conto_iterazioni > 1000000:
+                    conto_iterazioni = 0
+                    return False
 
-            print(self.giorni[i].gma, self.giorni[i].nome_giorno)
+            while len(self.giorni[i].notte) < 2:
+                conto_iterazioni += 1
+                op = random.choice(op_meno_turni)
+                if op not in self.giorni[i].mattina and op not in self.giorni[i].pomeriggio and op not in self.giorni[i].notte and op not in self.giorni[i-1].notte: # and op.turni_effettuati < (op.turni_max - 1):
+                    self.giorni[i].notte.append(op)
+                    op.turni_effettuati += 2
+                    op.ore_totali += self.minuti_turno_n
+                if conto_iterazioni > 1000000:
+                    conto_iterazioni = 0
+                    return False
 
 
 
             i += 1
 
-
         for op in self.operatori:
-            controllo_num_turni = 0
-            if op.ruolo == 'd':
-                controllo_num_turni = self.turni_dir
-            elif op.ruolo == 'c':
-                controllo_num_turni = self.turni_conv
+            print(op.nomecognome(), op.turni_effettuati)
 
+        return True
 
 
     def stampa_cal(self):
@@ -133,8 +164,22 @@ class Calendario:
         for op in self.operatori:
             print(op.nomecognome(), op.turni_effettuati, round(op.ore_totali, 2))
 
+    def reset(self):
+        for op in self.operatori:
+            op.turni_effettuati = 0
+            op.ore_totali = 0
+        while self.giorni:
+            self.giorni.pop()
+        print(self.giorni)
+
+
 maggio = Calendario()
 maggio.calcola_numturni_operatore()
 maggio.lista_operatori()
-maggio.popola_cal()
-#maggio.stampa_cal()
+riuscito = False
+while riuscito == False:
+    maggio.reset()
+    print('Ricalcolo, mannaggia la madonna')
+    riuscito = maggio.popola_cal()
+
+maggio.stampa_cal()
