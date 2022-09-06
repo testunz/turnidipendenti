@@ -179,7 +179,7 @@ maggio.lista_operatori()
 riuscito = False
 while riuscito == False:
     maggio.reset()
-    print('Ricalcolo, mannaggia la madonna')
+    print('Ricalcolo')
     riuscito = maggio.popola_cal()
 
 maggio.stampa_cal()
